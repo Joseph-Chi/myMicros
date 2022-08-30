@@ -1,0 +1,18 @@
+FROM ubuntu:20.04
+# ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get -y install tesseract-ocr libgl1-mesa-dev\
+  && apt-get install -y python3.8 python3-pip \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN pip install opencv-python pytesseract
+
+WORKDIR /app
+COPY . /app
+
+RUN pip install -r requirements.txt
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
